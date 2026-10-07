@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PULSE — спорт в одном месте</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#F2F4F7;--card:#fff;--ink:#0F1720;--mut:#5C6877;--line:#E1E5EB;--acc:#2F5BFF;--hi:#C6F432;--onacc:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1117;--card:#161C25;--ink:#EEF2F6;--mut:#8D99A8;--line:#252E3A;--acc:#6F8CFF;--hi:#C6F432;--onacc:#0D1117}}
+:root[data-theme="dark"]{--bg:#0D1117;--card:#161C25;--ink:#EEF2F6;--mut:#8D99A8;--line:#252E3A;--acc:#6F8CFF;--hi:#C6F432;--onacc:#0D1117}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 Manrope,system-ui,sans-serif}
+h1,h2,h3{font-family:Unbounded,Manrope,sans-serif;margin:0;letter-spacing:-.02em}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.bar{max-width:1000px;margin:auto;display:flex;align-items:center;gap:12px;padding:10px 16px}
+.logo{font:800 20px Unbounded,sans-serif;display:flex;align-items:center;gap:8px}
+.logo i{width:14px;height:14px;border-radius:50%;background:var(--hi);box-shadow:0 0 0 3px var(--ink)}
+nav{display:flex;gap:4px;overflow-x:auto;flex:1;scrollbar-width:none;position:relative}
+nav::-webkit-scrollbar{display:none}
+nav button{border:0;background:none;color:var(--mut);font:600 14px Manrope,sans-serif;padding:9px 14px;border-radius:99px;cursor:pointer;white-space:nowrap;transition:color .2s,background .2s}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected=true]{background:var(--ink);color:var(--bg)}
+#th{border:1px solid var(--line);background:var(--card);color:var(--ink);width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:16px}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{max-width:1000px;margin:auto;padding:24px 16px 60px}
+section{display:none}section.on{display:block;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.hero{padding:8px 0 20px}.hero h1{font-size:clamp(26px,5vw,40px);line-height:1.1}.hero p{color:var(--mut);max-width:560px;margin:10px 0 0}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.card h3{font-size:16px;margin-bottom:12px}
+label{display:block;font-size:13px;color:var(--mut);font-weight:600;margin:10px 0 4px}
+input,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+.btn{background:var(--acc);color:var(--onacc);border:0;border-radius:12px;padding:11px 16px;font:700 14px Manrope,sans-serif;cursor:pointer;margin-top:14px;transition:transform .15s}
+.btn:active{transform:scale(.97)}.btn.g{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.big{font:800 34px Unbounded,sans-serif;margin:8px 0 2px}.mut{color:var(--mut);font-size:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:99px;font:600 13px Manrope,sans-serif;cursor:pointer;transition:all .2s}
+.chip.on{background:var(--hi);border-color:var(--hi);color:#0F1720}
+.list>div{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.list>div:last-child{border:0}
+.x{background:none;border:0;color:var(--mut);cursor:pointer;font-size:16px}
+.bars{display:flex;align-items:flex-end;gap:6px;height:110px;margin-top:8px}
+.bars div{flex:1;background:var(--acc);border-radius:6px 6px 2px 2px;min-height:3px;position:relative;transition:height .4s}
+.bars span{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--mut)}
+.days{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.days button{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--mut);font:700 13px Manrope;cursor:pointer;transition:all .2s}
+.days button.on{background:var(--hi);color:#0F1720;border-color:var(--hi);transform:scale(1.05)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line)}th{color:var(--mut);font-weight:600}
+.tw{overflow-x:auto}
+details{border-bottom:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0;color:var(--mut)}
+.zone{height:10px;border-radius:5px;background:var(--acc);margin:3px 0 10px;transition:width .4s}
+.ok{color:var(--acc);font-weight:700;margin-top:10px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:560px){.logo span{display:none}}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<div class="logo"><i></i><span>PULSE</span></div>
+<nav role="tablist" id="nav"></nav>
+<button id="th" aria-label="Сменить тему">◐</button>
+</div></header>
+<main>
+
+<section id="s-track">
+<div class="hero"><h1>Дневник тренировок</h1><p>Записывай подходы и смотри, как растёт объём. Данные хранятся в этом браузере.</p></div>
+<div class="grid">
+<div class="card"><h3>Новый подход</h3>
+<label>Упражнение</label><input id="tn" placeholder="Жим лёжа" list="ex">
+<datalist id="ex"><option>Жим лёжа<option>Присед<option>Становая тяга<option>Подтягивания<option>Отжимания</datalist>
+<div class="row"><div><label>Вес, кг</label><input id="tw" type="number" min="0" value="60"></div><div><label>Повторы</label><input id="tr" type="number" min="1" value="8"></div><div><label>Подходы</label><input id="ts" type="number" min="1" value="3"></div></div>
+<button class="btn" id="tadd">Добавить запись</button></div>
+<div class="card"><h3>Объём за 7 дней, кг</h3><div class="bars" id="tbars"></div><div style="height:22px"></div><div class="mut" id="tsum"></div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>История</h3><div class="list" id="tlist"></div></div>
+</section>
+
+<section id="s-calc">
+<div class="hero"><h1>Расчёты</h1><p>Индекс массы тела, норма калорий, БЖУ и пульсовые зоны.</p></div>
+<div class="grid">
+<div class="card"><h3>ИМТ</h3><div class="row"><div><label>Рост, см</label><input id="bh" type="number" value="175"></div><div><label>Вес, кг</label><input id="bw" type="number" value="70"></div></div>
+<div class="big" id="bo">—</div><div class="mut" id="bt"></div></div>
+<div class="card"><h3>Калории и БЖУ</h3>
+<div class="row"><div><label>Пол</label><select id="cs"><option value="5">Мужской<option value="-161">Женский</select></div><div><label>Возраст</label><input id="ca" type="number" value="28"></div></div>
+<div class="row"><div><label>Рост</label><input id="ch" type="number" value="175"></div><div><label>Вес</label><input id="cw" type="number" value="70"></div></div>
+<label>Активность</label><select id="cac"><option value="1.2">Сидячая<option value="1.375" selected>1–3 тренировки в неделю<option value="1.55">3–5 тренировок<option value="1.725">Каждый день</select>
+<label>Цель</label><select id="cg"><option value="0.85">Похудение<option value="1" selected>Поддержание<option value="1.12">Набор массы</select>
+<div class="big" id="co">—</div><div class="mut" id="cm"></div></div>
+<div class="card"><h3>Пульсовые зоны</h3><label>Возраст</label><input id="pa" type="number" value="28"><div id="po" style="margin-top:12px"></div></div>
+</div>
+</section>
+
+<section id="s-ex">
+<div class="hero"><h1>Упражнения</h1><p>Выбери мышцы и место тренировки или найди упражнение по названию.</p></div>
+<input id="eq" placeholder="Поиск упражнения" aria-label="Поиск">
+<div class="chips" id="em"></div><div class="chips" id="ee"></div>
+<div class="grid" id="eg"></div>
+</section>
+
+<section id="s-ch">
+<div class="hero"><h1>Челлендж 30 дней</h1><p>Отмечай дни, когда потренировался. Рейтинг друзей считается по очкам.</p></div>
+<div class="card"><h3>Мои дни: <span id="cd">0</span> из 30</h3><div class="days" id="dg"></div><button class="btn g" id="dr">Сбросить</button></div>
+<div class="card" style="margin-top:14px"><h3>Рейтинг участников</h3>
+<div class="row"><input id="pn" placeholder="Имя участника"><input id="pp" type="number" placeholder="Очки" style="max-width:110px"><button class="btn" style="margin:0;flex:0 0 auto" id="pad">Добавить</button></div>
+<div class="list" id="pl" style="margin-top:8px"></div></div>
+</section>
+
+<section id="s-coach">
+<div class="hero"><h1>Тренер</h1><p>Групповые и персональные занятия. Запишись на пробную тренировку.</p></div>
+<div class="grid">
+<div class="card"><h3>Расписание</h3><div class="tw"><table><tr><th>День<th>Время<th>Занятие</tr>
+<tr><td>Пн, Ср<td>19:00<td>Силовая</tr><tr><td>Вт, Чт<td>07:30<td>Кардио и бег</tr><tr><td>Пт<td>18:00<td>Функциональная</tr><tr><td>Сб<td>10:00<td>Растяжка и йога</tr></table></div></div>
+<div class="card"><h3>Цены</h3><div class="list"><div><span>Пробное занятие</span><b>бесплатно</b></div><div><span>Групповое, 8 занятий</span><b>400 000 сум</b></div><div><span>Персональное</span><b>150 000 сум</b></div></div></div>
+<div class="card"><h3>Запись</h3><label>Имя</label><input id="fn"><label>Телефон</label><input id="fp" type="tel"><button class="btn" id="fb">Записаться</button><div class="ok" id="fo"></div></div>
+</div>
+</section>
+
+<section id="s-faq">
+<div class="hero"><h1>Частые вопросы</h1><p>Начни вводить вопрос, и список сузится.</p></div>
+<input id="fq" placeholder="Например: сколько белка нужно" aria-label="Поиск по вопросам">
+<div class="card" style="margin-top:14px" id="fl"></div>
+</section>
+
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const tabs=[['track','Дневник'],['calc','Расчёты'],['ex','Упражнения'],['ch','Челлендж'],['coach','Тренер'],['faq','Вопросы']];
+const nav=$('nav');
+tabs.forEach(([id,n])=>{const b=document.createElement('button');b.textContent=n;b.role='tab';b.dataset.t=id;b.onclick=()=>show(id);nav.appendChild(b)});
+function show(id){tabs.forEach(([t])=>$('s-'+t).classList.toggle('on',t===id));[...nav.children].forEach(b=>{const on=b.dataset.t===id;b.setAttribute('aria-selected',on);if(on)b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'})});try{history.replaceState(null,'','#'+id)}catch(e){}scrollTo({top:0,behavior:'smooth'})}
+$('th').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue('--bg').trim()==='#0D1117';r.dataset.theme=d?'light':'dark'};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* Tracker */
+let log=store.get('log',[]);
+function rTrack(){
+ $('tlist').innerHTML=log.length?log.slice().reverse().map((e,i)=>`<div><span><b>${esc(e.n)}</b><br><span class="mut">${e.w} кг × ${e.r} × ${e.s} · ${e.d}</span></span><button class="x" aria-label="Удалить" data-i="${log.length-1-i}">✕</button></div>`).join(''):'<div class="mut">Пока пусто. Добавь первую запись выше.</div>';
+ $('tlist').querySelectorAll('.x').forEach(b=>b.onclick=()=>{log.splice(+b.dataset.i,1);store.set('log',log);rTrack()});
+ const days=[],now=new Date();for(let i=6;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);days.push(d.toISOString().slice(0,10))}
+ const vol=days.map(d=>log.filter(e=>e.iso===d).reduce((a,e)=>a+e.w*e.r*e.s,0)),mx=Math.max(...vol,1);
+ $('tbars').innerHTML=vol.map((v,i)=>`<div style="height:${v/mx*100}%" title="${v} кг"><span>${days[i].slice(8)}</span></div>`).join('');
+ $('tsum').textContent=`Всего за неделю: ${vol.reduce((a,b)=>a+b,0).toLocaleString('ru')} кг, записей: ${log.length}`;
+}
+$('tadd').onclick=()=>{const n=$('tn').value.trim();if(!n){$('tn').focus();return}const t=new Date();log.push({n,w:+$('tw').value||0,r:+$('tr').value||1,s:+$('ts').value||1,iso:t.toISOString().slice(0,10),d:t.toLocaleDateString('ru')});store.set('log',log);$('tn').value='';rTrack()};
+
+/* Calculators */
+function calc(){
+ const h=+$('bh').value/100,w=+$('bw').value,b=w/(h*h);
+ if(h>0&&w>0){$('bo').textContent=b.toFixed(1);$('bt').textContent=b<18.5?'Ниже нормы':b<25?'Норма':b<30?'Избыточный вес':'Ожирение'}
+ const bmr=10*$('cw').value+6.25*$('ch').value-5*$('ca').value+ +$('cs').value,k=Math.round(bmr*$('cac').value*$('cg').value);
+ if(k>0){const cw=+$('cw').value,p=Math.round(cw*1.8),f=Math.round(cw*0.9),c=Math.max(0,Math.round((k-p*4-f*9)/4));
+ $('co').textContent=k+' ккал';$('cm').textContent=`Белки ${p} г · жиры ${f} г · углеводы ${c} г`}
+ const mx=220-$('pa').value,z=[['Лёгкая',.5,.6],['Жиросжигание',.6,.7],['Аэробная',.7,.8],['Анаэробная',.8,.9],['Максимум',.9,1]];
+ $('po').innerHTML=z.map(([n,a,b2])=>`<div class="mut">${n}: <b style="color:var(--ink)">${Math.round(mx*a)}–${Math.round(mx*b2)}</b> уд/мин</div><div class="zone" style="width:${b2*100}%"></div>`).join('');
+}
+['bh','bw','cs','ca','ch','cw','cac','cg','pa'].forEach(i=>$(i).oninput=calc);
+
+/* Exercises */
+const EX=[['Жим лёжа','Грудь','Зал','Лёжа на скамье опусти штангу к груди и выжми вверх, лопатки сведены.'],['Отжимания','Грудь','Дома','Тело прямое, локти под 45° к корпусу, грудь почти касается пола.'],['Подтягивания','Спина','Турник','Тянись грудью к перекладине, не раскачивайся.'],['Тяга гантели','Спина','Дома','Упор рукой в опору, тяни гантель к поясу, локоть вдоль тела.'],['Присед','Ноги','Зал','Колени идут по линии носков, спина нейтральная, глубина до параллели.'],['Выпады','Ноги','Дома','Шаг вперёд, заднее колено к полу, вернись на пятке передней ноги.'],['Жим гантелей сидя','Плечи','Зал','Выжимай вверх без прогиба в пояснице, опускай до уровня ушей.'],['Планка','Пресс','Дома','Локти под плечами, корпус в линию, живот напряжён, 30–60 секунд.'],['Скручивания','Пресс','Дома','Поясница прижата, поднимай только лопатки, без рывков.'],['Австралийские подтягивания','Спина','Турник','Низкая перекладина, тело прямое, подтягивайся грудью к рукам.'],['Подъём ног в висе','Пресс','Турник','В висе поднимай прямые ноги до уровня таза без раскачки.'],['Румынская тяга','Ноги','Зал','Таз назад, спина прямая, штанга скользит вдоль ног.']];
+let fm='Все',fe='Все';
+function rEx(){
+ const M=['Все',...new Set(EX.map(e=>e[1]))],E=['Все',...new Set(EX.map(e=>e[2]))];
+ $('em').innerHTML=M.map(m=>`<button class="chip ${m===fm?'on':''}" data-m="${m}">${m}</button>`).join('');
+ $('ee').innerHTML=E.map(m=>`<button class="chip ${m===fe?'on':''}" data-e="${m}">${m}</button>`).join('');
+ $('em').querySelectorAll('button').forEach(b=>b.onclick=()=>{fm=b.dataset.m;rEx()});
+ $('ee').querySelectorAll('button').forEach(b=>b.onclick=()=>{fe=b.dataset.e;rEx()});
+ const q=$('eq').value.toLowerCase(),r=EX.filter(e=>(fm==='Все'||e[1]===fm)&&(fe==='Все'||e[2]===fe)&&e[0].toLowerCase().includes(q));
+ $('eg').innerHTML=r.length?r.map(e=>`<div class="card"><h3>${e[0]}</h3><div class="mut" style="margin-bottom:8px">${e[1]} · ${e[2]}</div>${e[3]}</div>`).join(''):'<div class="mut">Ничего не найдено. Сбрось фильтры или измени запрос.</div>';
+}
+$('eq').oninput=rEx;
+
+/* Challenge */
+let cdays=store.get('cdays',[]),pl=store.get('pl',[['Алиса',18],['Тимур',14]]);
+function rCh(){
+ $('dg').innerHTML=Array.from({length:30},(_,i)=>`<button class="${cdays.includes(i+1)?'on':''}" data-d="${i+1}" aria-pressed="${cdays.includes(i+1)}">${i+1}</button>`).join('');
+ $('dg').querySelectorAll('button').forEach(b=>b.onclick=()=>{const d=+b.dataset.d;cdays=cdays.includes(d)?cdays.filter(x=>x!==d):[...cdays,d];store.set('cdays',cdays);rCh()});
+ $('cd').textContent=cdays.length;
+ $('pl').innerHTML=pl.slice().sort((a,b)=>b[1]-a[1]).map((p,i)=>`<div><span>${i+1}. ${esc(p[0])}</span><b>${p[1]}</b></div>`).join('');
+}
+$('dr').onclick=()=>{cdays=[];store.set('cdays',cdays);rCh()};
+$('pad').onclick=()=>{const n=$('pn').value.trim();if(!n)return;pl.push([n,+$('pp').value||0]);store.set('pl',pl);$('pn').value=$('pp').value='';rCh()};
+
+/* Coach */
+$('fb').onclick=()=>{$('fo').textContent=$('fn').value.trim()&&$('fp').value.trim()?`Спасибо, ${$('fn').value.trim()}! Тренер свяжется с вами по телефону.`:'Заполни имя и телефон.'};
+
+/* FAQ */
+const FAQ=[['Сколько белка нужно в день?','Для тренирующихся обычно 1,6–2,2 г на кг веса. Точное значение посчитай во вкладке «Расчёты».'],['Как часто тренироваться новичку?','3 раза в неделю на всё тело с днём отдыха между тренировками. Этого достаточно для старта.'],['Сколько отдыхать между подходами?','Для силы 2–3 минуты, для набора массы 1–2 минуты, для выносливости 30–60 секунд.'],['Что делать, если нет зала?','Отжимания, подтягивания, выпады и планка закрывают все группы мышц. Смотри фильтр «Дома» в упражнениях.'],['Как похудеть без вреда?','Дефицит калорий около 10–20% от нормы, белок в рационе, силовые тренировки и сон 7–9 часов.'],['Нужно ли разминаться?','Да: 5–10 минут лёгкого кардио и подводящие подходы снижают риск травм.'],['Когда болят мышцы после тренировки?','Это нормально 1–3 дня. Резкая или суставная боль — повод остановиться и обратиться к врачу.'],['Как понять свою пульсовую зону?','Максимальный пульс примерно 220 минус возраст. Зоны посчитаны во вкладке «Расчёты».'],['Как записаться на занятие?','Открой вкладку «Тренер», заполни имя и телефон. Первое занятие бесплатно.']];
+function rFaq(){const q=$('fq').value.toLowerCase(),r=FAQ.filter(f=>(f[0]+f[1]).toLowerCase().includes(q));
+ $('fl').innerHTML=r.length?r.map(f=>`<details><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join(''):'<div class="mut">Ответа нет. Попробуй другие слова, например «белок» или «зал».</div>'}
+$('fq').oninput=rFaq;
+
+rTrack();calc();rEx();rCh();rFaq();
+show(tabs.some(t=>'#'+t[0]===location.hash)?location.hash.slice(1):'track');
+</script>
+</body>
+</html>
