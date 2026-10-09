@@ -33,7 +33,7 @@ section{display:none}section.on{display:block;animation:in .35s ease}
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
 .card h3{font-size:16px;margin-bottom:12px}
 label{display:block;font-size:13px;color:var(--mut);font-weight:600;margin:10px 0 4px}
-input,select{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+input,select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
 .row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
 .btn{background:var(--acc);color:var(--onacc);border:0;border-radius:12px;padding:11px 16px;font:700 14px Manrope,sans-serif;cursor:pointer;margin-top:14px;transition:transform .15s}
 .btn:active{transform:scale(.97)}.btn.g{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
@@ -54,6 +54,9 @@ table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;p
 .tw{overflow-x:auto}
 details{border-bottom:1px solid var(--line);padding:12px 0}summary{cursor:pointer;font-weight:700}details p{margin:8px 0 0;color:var(--mut)}
 .zone{height:10px;border-radius:5px;background:var(--acc);margin:3px 0 10px;transition:width .4s}
+.res td:last-child,.res th:last-child{text-align:right;font-weight:700}
+.tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:12px}
+textarea{resize:vertical}
 .ok{color:var(--acc);font-weight:700;margin-top:10px}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:560px){.logo span{display:none}}
@@ -95,6 +98,17 @@ details{border-bottom:1px solid var(--line);padding:12px 0}summary{cursor:pointe
 </div>
 </section>
 
+<section id="s-kcal">
+<div class="hero"><h1>Счётчик калорий</h1><p>Опиши, что съел, обычными словами. Можно с количеством: «2 яйца», «200 г риса».</p></div>
+<div class="grid">
+<div class="card"><h3>Что ты ел?</h3><textarea id="kq" rows="3" placeholder="Например: булочка с сосиской и кофе с молоком"></textarea>
+<div class="chips" id="kch"></div>
+<button class="btn" id="kgo">Посчитать</button></div>
+<div class="card"><h3>Результат</h3><div id="kr" class="mut">Здесь появится расчёт.</div></div>
+</div>
+<div class="card" style="margin-top:14px"><h3>Сегодня</h3><div class="big" id="kt">0 ккал</div><div class="mut" id="kn"></div><button class="btn g" id="kclr">Очистить день</button></div>
+</section>
+
 <section id="s-ex">
 <div class="hero"><h1>Упражнения</h1><p>Выбери мышцы и место тренировки или найди упражнение по названию.</p></div>
 <input id="eq" placeholder="Поиск упражнения" aria-label="Поиск">
@@ -130,7 +144,7 @@ details{border-bottom:1px solid var(--line);padding:12px 0}summary{cursor:pointe
 <script>
 const $=id=>document.getElementById(id);
 const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-const tabs=[['track','Дневник'],['calc','Расчёты'],['ex','Упражнения'],['ch','Челлендж'],['coach','Тренер'],['faq','Вопросы']];
+const tabs=[['track','Дневник'],['calc','Расчёты'],['kcal','Калории'],['ex','Упражнения'],['ch','Челлендж'],['coach','Тренер'],['faq','Вопросы']];
 const nav=$('nav');
 tabs.forEach(([id,n])=>{const b=document.createElement('button');b.textContent=n;b.role='tab';b.dataset.t=id;b.onclick=()=>show(id);nav.appendChild(b)});
 function show(id){tabs.forEach(([t])=>$('s-'+t).classList.toggle('on',t===id));[...nav.children].forEach(b=>{const on=b.dataset.t===id;b.setAttribute('aria-selected',on);if(on)b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'})});try{history.replaceState(null,'','#'+id)}catch(e){}scrollTo({top:0,behavior:'smooth'})}
@@ -160,6 +174,61 @@ function calc(){
  $('po').innerHTML=z.map(([n,a,b2])=>`<div class="mut">${n}: <b style="color:var(--ink)">${Math.round(mx*a)}–${Math.round(mx*b2)}</b> уд/мин</div><div class="zone" style="width:${b2*100}%"></div>`).join('');
 }
 ['bh','bw','cs','ca','ch','cw','cac','cg','pa'].forEach(i=>$(i).oninput=calc);
+
+/* Calories */
+const FOOD=[
+['булочка с сосиск|сосиска в тесте|сосиски в тесте',290,120,'Сосиска в тесте'],
+['хот-дог|хотдог',250,150,'Хот-дог'],['бургер|гамбургер',250,200,'Бургер'],['чизбургер',260,200,'Чизбургер'],
+['шаурма|шаверма|донер',215,300,'Шаурма'],['пицц',270,120,'Пицца (кусок)'],['картошка фри|картофель фри|фри',320,100,'Картофель фри'],
+['булочк|булка|булку',290,70,'Булочка'],['круассан',400,60,'Круассан'],['батон',260,30,'Батон (ломтик)'],['хлеб',250,30,'Хлеб (ломтик)'],['бутерброд с сыр',300,80,'Бутерброд с сыром'],['бутерброд с колбас',290,80,'Бутерброд с колбасой'],['бутерброд',290,80,'Бутерброд'],
+['лаваш',240,60,'Лаваш'],['самса',300,120,'Самса'],['пельмен',250,200,'Пельмени'],['манты',210,200,'Манты'],['блин',230,60,'Блин'],['сырник',220,100,'Сырники'],
+['яичниц',200,120,'Яичница'],['омлет',154,150,'Омлет'],['яйц',157,55,'Яйцо'],
+['сосиск',270,50,'Сосиска'],['сардельк',270,100,'Сардельки'],['колбас',300,30,'Колбаса'],['сыр',350,30,'Сыр'],['творог',120,150,'Творог'],
+['молок',60,200,'Молоко'],['кефир',55,200,'Кефир'],['йогурт',70,125,'Йогурт'],['сметан',200,30,'Сметана'],['масл',740,10,'Сливочное масло'],
+['рис',130,150,'Рис отварной'],['гречк|гречневая',110,150,'Гречка'],['макарон|паста|спагетти',160,200,'Макароны'],['овсянк|овсяная',90,200,'Овсяная каша'],['каша',100,200,'Каша'],
+['пюре',106,200,'Картофельное пюре'],['картошк|картофел',85,150,'Картофель отварной'],
+['куриная грудк|куриное филе|грудк',165,150,'Куриная грудка'],['куриц|курин|курятин',200,150,'Курица'],['говядин',220,150,'Говядина'],['свинин',300,150,'Свинина'],['котлет',230,100,'Котлета'],['шашлык',250,150,'Шашлык'],
+['лосос|семг|форел',200,150,'Красная рыба'],['рыб',150,150,'Рыба'],['плов',190,300,'Плов'],['лагман',120,350,'Лагман'],['борщ',50,300,'Борщ'],['суп',45,300,'Суп'],['салат',80,150,'Салат'],
+['огурц',15,100,'Огурец'],['помидор|томат',20,100,'Помидор'],['яблок',52,180,'Яблоко'],['банан',90,120,'Банан'],['апельсин',47,150,'Апельсин'],
+['шоколад',540,30,'Шоколад'],['конфет',450,15,'Конфета'],['печенье|печенья',450,30,'Печенье'],['торт|пирожное',400,100,'Торт'],['мороженое',207,70,'Мороженое'],['чипс',530,40,'Чипсы'],['орех|арахис',600,30,'Орехи'],['мед',330,20,'Мёд'],['сахар',390,10,'Сахар (ложка)'],
+['кофе с молок|капучино|латте',45,200,'Кофе с молоком'],['кофе',2,200,'Кофе'],['чай с сахар',25,200,'Чай с сахаром'],['чай',1,200,'Чай'],
+['кока-кол|кола|пепси|газировк',42,330,'Кола'],['сок',46,200,'Сок'],['пиво',43,500,'Пиво']];
+const NUMW={'полтор':1.5,'пол':.5,'один':1,'одну':1,'одна':1,'два':2,'две':2,'три':3,'четыре':4,'пять':5,'шесть':6};
+const norm=s=>s.toLowerCase().replace(/ё/g,'е');
+function findFood(p){let best=null,bl=0;for(const f of FOOD)for(const k of f[0].split('|')){const kk=norm(k);if(kk.length>bl&&new RegExp('(^|[^а-я])'+kk).test(p)){best=f;bl=kk.length}}return best}
+function qty(p){
+ const m=p.match(/(\d+(?:[.,]\d+)?)\s*(кг|килограмм|мл|грамм|гр|г|стакан|чашк|ложк)?/);
+ if(m){const v=parseFloat(m[1].replace(',','.')),u=m[2]||'';
+  if(u==='кг'||u==='килограмм')return{n:1,g:v*1000};
+  if(u==='мл'||u==='грамм'||u==='гр'||u==='г')return{n:1,g:v};
+  if(u==='стакан'||u==='чашк')return{n:1,g:v*200};
+  if(u==='ложк')return{n:1,g:v*15};
+  return{n:v,g:null}}
+ for(const w in NUMW)if(new RegExp('(^|[^а-я])'+w).test(p))return{n:NUMW[w],g:null};
+ return{n:1,g:null}}
+let kLast=0,kday=store.get('kday',{d:'',t:0,n:0});
+const todayStr=()=>new Date().toISOString().slice(0,10);
+if(kday.d!==todayStr())kday={d:todayStr(),t:0,n:0};
+function rDay(){$('kt').textContent=Math.round(kday.t)+' ккал';$('kn').textContent=kday.n?`Добавлено приёмов пищи: ${kday.n}`:'Пока ничего не добавлено.'}
+function kcalGo(){
+ const q=$('kq').value.trim();if(!q){$('kq').focus();return}
+ const rows=[],miss=[];
+ const add=p=>{const f=findFood(p);if(!f)return false;const{n,g}=qty(p);const gr=g!=null?g:f[2]*n;
+  rows.push([f[3],g!=null?Math.round(g)+' г':(n===1?'1 порция ≈ '+f[2]+' г':n+' × '+f[2]+' г'),Math.round(f[1]*gr/100)]);return true};
+ norm(q).split(/[,;+\n]| и | плюс /).map(x=>x.trim()).filter(Boolean).forEach(p=>{
+  if(add(p))return;
+  if(p.includes(' с ')){p.split(' с ').forEach(x=>{x=x.trim();if(x&&!add(x))miss.push(x)})}else miss.push(p)});
+ const total=rows.reduce((a,r)=>a+r[2],0);kLast=total;
+ let h='';
+ if(rows.length)h+=`<div class="tw"><table class="res"><tr><th>Продукт<th>Порция<th>ккал</tr>${rows.map(r=>`<tr><td>${esc(r[0])}<td class="mut">${esc(r[1])}<td>${r[2]}</tr>`).join('')}</table></div><div class="tot"><span class="mut">Итого</span><span class="big" style="margin:0">${total} ккал</span></div><button class="btn" id="kadd">Добавить в «Сегодня»</button><div class="mut" style="margin-top:8px">Расчёт примерный: порции средние. Укажи вес («150 г») для точности.</div>`;
+ if(miss.length)h+=`<div class="mut" style="margin-top:10px">Не удалось распознать: ${miss.map(m=>'«'+esc(m)+'»').join(', ')}. Попробуй назвать проще.</div>`;
+ $('kr').innerHTML=h;
+ if($('kadd'))$('kadd').onclick=()=>{kday.t+=kLast;kday.n++;store.set('kday',kday);rDay();$('kadd').textContent='Добавлено ✓';$('kadd').disabled=true}}
+$('kgo').onclick=kcalGo;
+$('kq').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();kcalGo()}};
+$('kclr').onclick=()=>{kday={d:todayStr(),t:0,n:0};store.set('kday',kday);rDay()};
+$('kch').innerHTML=['булочка с сосиской','2 яйца и бутерброд с сыром','гречка с курицей','капучино и круассан','200 г риса и котлета'].map(t=>`<button class="chip">${t}</button>`).join('');
+$('kch').querySelectorAll('button').forEach(b=>b.onclick=()=>{$('kq').value=b.textContent;kcalGo()});
 
 /* Exercises */
 const EX=[['Жим лёжа','Грудь','Зал','Лёжа на скамье опусти штангу к груди и выжми вверх, лопатки сведены.'],['Отжимания','Грудь','Дома','Тело прямое, локти под 45° к корпусу, грудь почти касается пола.'],['Подтягивания','Спина','Турник','Тянись грудью к перекладине, не раскачивайся.'],['Тяга гантели','Спина','Дома','Упор рукой в опору, тяни гантель к поясу, локоть вдоль тела.'],['Присед','Ноги','Зал','Колени идут по линии носков, спина нейтральная, глубина до параллели.'],['Выпады','Ноги','Дома','Шаг вперёд, заднее колено к полу, вернись на пятке передней ноги.'],['Жим гантелей сидя','Плечи','Зал','Выжимай вверх без прогиба в пояснице, опускай до уровня ушей.'],['Планка','Пресс','Дома','Локти под плечами, корпус в линию, живот напряжён, 30–60 секунд.'],['Скручивания','Пресс','Дома','Поясница прижата, поднимай только лопатки, без рывков.'],['Австралийские подтягивания','Спина','Турник','Низкая перекладина, тело прямое, подтягивайся грудью к рукам.'],['Подъём ног в висе','Пресс','Турник','В висе поднимай прямые ноги до уровня таза без раскачки.'],['Румынская тяга','Ноги','Зал','Таз назад, спина прямая, штанга скользит вдоль ног.']];
@@ -195,7 +264,7 @@ function rFaq(){const q=$('fq').value.toLowerCase(),r=FAQ.filter(f=>(f[0]+f[1]).
  $('fl').innerHTML=r.length?r.map(f=>`<details><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join(''):'<div class="mut">Ответа нет. Попробуй другие слова, например «белок» или «зал».</div>'}
 $('fq').oninput=rFaq;
 
-rTrack();calc();rEx();rCh();rFaq();
+rTrack();calc();rDay();rEx();rCh();rFaq();
 show(tabs.some(t=>'#'+t[0]===location.hash)?location.hash.slice(1):'track');
 </script>
 </body>
